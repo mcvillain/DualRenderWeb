@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Website Content Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Dual Website Content Viewer</h1>
+        <form id="urlForm">
+            <input type="text" id="url1" placeholder="Enter first URL" required>
+            <input type="text" id="url2" placeholder="Enter second URL" required>
+            <button type="submit">Fetch Content</button>
+        </form>
+        <div class="content-container">
+            <div id="content1" class="content-box"></div>
+            <div id="content2" class="content-box"></div>
+        </div>
+        <div id="error" class="error"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
