@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, jsonify
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 import logging
 
 app = Flask(__name__)
@@ -14,21 +14,14 @@ def fetch_content(url):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Remove script and style elements
-        for script in soup(["script", "style"]):
-            script.decompose()
+        # Update relative URLs to absolute URLs
+        for tag in soup.find_all(['a', 'link', 'img', 'script']):
+            if tag.has_attr('href'):
+                tag['href'] = urljoin(url, tag['href'])
+            if tag.has_attr('src'):
+                tag['src'] = urljoin(url, tag['src'])
         
-        # Get text content
-        text = soup.get_text()
-        
-        # Break into lines and remove leading and trailing space on each
-        lines = (line.strip() for line in text.splitlines())
-        # Break multi-headlines into a line each
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        # Drop blank lines
-        text = '\n'.join(chunk for chunk in chunks if chunk)
-        
-        return text
+        return str(soup)
     except requests.RequestException as e:
         app.logger.error(f"Error fetching content: {str(e)}")
         return f"Error fetching content: {str(e)}"

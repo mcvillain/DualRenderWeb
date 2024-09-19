@@ -31,12 +31,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            content1.textContent = data.content1;
-            content2.textContent = data.content2;
+            content1.innerHTML = data.content1;
+            content2.innerHTML = data.content2;
             errorDiv.textContent = '';
+
+            // Apply styles to rendered content
+            applyStylesToContent(content1);
+            applyStylesToContent(content2);
         } catch (error) {
             errorDiv.textContent = `Error: ${error.message}`;
         }
+    }
+
+    function applyStylesToContent(container) {
+        const styles = `
+            body { font-family: Arial, sans-serif; }
+            img { max-width: 100%; height: auto; }
+            a { color: #0066cc; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+        `;
+        const styleElement = document.createElement('style');
+        styleElement.textContent = styles;
+        container.appendChild(styleElement);
     }
 
     // Periodically update content
