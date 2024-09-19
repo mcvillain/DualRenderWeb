@@ -1,9 +1,12 @@
+import os
 from flask import Flask, render_template, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+import logging
 
 app = Flask(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 def fetch_content(url):
     try:
@@ -27,18 +30,22 @@ def fetch_content(url):
         
         return text
     except requests.RequestException as e:
+        app.logger.error(f"Error fetching content: {str(e)}")
         return f"Error fetching content: {str(e)}"
 
 @app.route('/')
 def index():
+    app.logger.info("Index route accessed")
     return render_template('index.html')
 
 @app.route('/fetch', methods=['POST'])
 def fetch():
+    app.logger.info("Fetch route accessed")
     url1 = request.form.get('url1')
     url2 = request.form.get('url2')
     
     if not url1 or not url2:
+        app.logger.error("Both URLs are required")
         return jsonify({'error': 'Both URLs are required'}), 400
     
     if not urlparse(url1).scheme:
@@ -46,6 +53,7 @@ def fetch():
     if not urlparse(url2).scheme:
         url2 = 'http://' + url2
     
+    app.logger.info(f"Fetching content from {url1} and {url2}")
     content1 = fetch_content(url1)
     content2 = fetch_content(url2)
     
@@ -56,7 +64,10 @@ def fetch():
 
 @app.route('/test')
 def test():
+    app.logger.info("Test route accessed")
     return "Server is running!"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.logger.info(f"Starting Flask app on port {port}")
+    app.run(host='0.0.0.0', port=port, debug=True)
