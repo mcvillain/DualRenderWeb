@@ -46,6 +46,7 @@ button:hover {
     display: flex;
     justify-content: space-between;
     height: calc(100vh - 200px);
+    position: relative;
 }
 
 .content-box {
@@ -54,8 +55,22 @@ button:hover {
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
-    margin: 0 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.resize-handle {
+    width: 10px;
+    background-color: #ddd;
+    cursor: col-resize;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.resize-handle::after {
+    content: "⋮";
+    color: #888;
+    font-size: 20px;
 }
 
 .content-box * {

@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const content1 = document.getElementById('content1');
     const content2 = document.getElementById('content2');
     const errorDiv = document.getElementById('error');
+    const resizeHandle = document.getElementById('resize-handle');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -54,6 +55,28 @@ document.addEventListener('DOMContentLoaded', () => {
         styleElement.textContent = styles;
         container.appendChild(styleElement);
     }
+
+    // Resizing functionality
+    let isResizing = false;
+    let startX;
+    let startWidth;
+
+    resizeHandle.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        startX = e.clientX;
+        startWidth = content1.offsetWidth;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const diff = e.clientX - startX;
+        content1.style.width = `${startWidth + diff}px`;
+        content2.style.width = `calc(100% - ${startWidth + diff}px - 10px)`;
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+    });
 
     // Periodically update content
     setInterval(fetchContent, 60000); // Update every 60 seconds
