@@ -54,5 +54,9 @@ def fetch():
         'content2': content2
     })
 
+@app.route('/test')
+def test():
+    return "Server is running!"
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
